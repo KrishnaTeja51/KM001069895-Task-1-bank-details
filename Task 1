@@ -1,0 +1,97 @@
+
+class Account:
+    def __init__(self, account_number, account_holder):
+        self.account_number = account_number
+        self.account_holder = account_holder
+        self.balance = 0.0
+        self.transactions = []
+
+    def deposit(self, amount):
+        self.balance += amount
+        self.transactions.append(f'Deposited: ${amount:.2f}')
+
+    def withdraw(self, amount):
+        if amount > self.balance:
+            print("Insufficient funds.")
+        else:
+            self.balance -= amount
+            self.transactions.append(f'Withdrew: ${amount:.2f}')
+
+    def transfer(self, amount, other_account):
+        if amount > self.balance:
+            print("Insufficient funds for transfer.")
+        else:
+            self.withdraw(amount)
+            other_account.deposit(amount)
+            self.transactions.append(f'Transferred: ${amount:.2f} to {other_account.account_holder}')
+
+    def print_transactions(self):
+        for transaction in self.transactions:
+            print(transaction)
+
+    def get_details(self):
+        return f'Account Number: {self.account_number}\nAccount Holder: {self.account_holder}\nBalance: ${self.balance:.2f}'
+
+def main():
+    accounts = {}
+    while True:
+        print("\n1. Create Account\n2. View Account Details\n3. Deposit\n4. Withdraw\n5. Transfer Funds\n6. Print Transactions\n7. Exit")
+        choice = input("Choose an option: ")
+
+        if choice == '1':
+            account_number = input("Enter account number: ")
+            account_holder = input("Enter account holder name: ")
+            accounts[account_number] = Account(account_number, account_holder)
+            print("Account created successfully.")
+
+        elif choice == '2':
+            account_number = input("Enter account number: ")
+            if account_number in accounts:
+                print(accounts[account_number].get_details())
+            else:
+                print("Account not found.")
+
+        elif choice == '3':
+            account_number = input("Enter account number: ")
+            if account_number in accounts:
+                amount = float(input("Enter amount to deposit: "))
+                accounts[account_number].deposit(amount)
+                print("Deposit successful.")
+            else:
+                print("Account not found.")
+
+        elif choice == '4':
+            account_number = input("Enter account number: ")
+            if account_number in accounts:
+                amount = float(input("Enter amount to withdraw: "))
+                accounts[account_number].withdraw(amount)
+                print("Withdrawal successful.")
+            else:
+                print("Account not found.")
+
+        elif choice == '5':
+            from_account = input("Enter your account number: ")
+            to_account = input("Enter recipient account number: ")
+            if from_account in accounts and to_account in accounts:
+                amount = float(input("Enter amount to transfer: "))
+                accounts[from_account].transfer(amount, accounts[to_account])
+                print("Transfer successful.")
+            else:
+                print("Account not found.")
+
+        elif choice == '6':
+            account_number = input("Enter account number: ")
+            if account_number in accounts:
+                accounts[account_number].print_transactions()
+            else:
+                print("Account not found.")
+
+        elif choice == '7':
+            print("Exiting.")
+            break
+
+        else:
+            print("Invalid option. Please try again.")
+
+if __name__ == "__main__":
+    main()
